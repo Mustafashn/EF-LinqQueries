@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qKWVPxmV9EBal16M9o6CJc/hNCmu+W4WdBK4Iuu69wZLHXN90NB7NZl3CpUjJCG8RlqQiMeKd572OCJRD+Zt9Q==",
+  "dgSpecHash": "yIXLA9aCLq7fL0XisAQTEYkKzptwmAuRzq63EWOb/94QwTyu0LaUbN6MdeIwvj/+nNVEpxGKY49HWmmFZFdRrQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\EfRelational.csproj",
+  "projectFilePath": "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\EfRelational.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\musta\\.nuget\\packages\\google.protobuf\\3.21.9\\google.protobuf.3.21.9.nupkg.sha512",
     "C:\\Users\\musta\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

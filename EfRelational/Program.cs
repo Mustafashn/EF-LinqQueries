@@ -158,75 +158,70 @@ namespace EfRelational
 
 
     }
+    public class CustomerDemo
+    {
+        public CustomerDemo()
+        {
+            Orders = new List<OrderDemo>();
+        }
+        public int CustomerId { get; set; }
+
+        public string Name { get; set; }
+        public int OrderCount { get; set; }
+        public List<OrderDemo> Orders { get; set; }
+
+    }
+
+    public class OrderDemo
+    {
+        public int OrderId { get; set; }
+        public decimal Total { get; set; }
+        public List<ProductDemo> Products { get; set; }
+    }
+    public class ProductDemo
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+
+    }
     class Program
     {
         static void Main(string[] args)
         {
-
             using (var db = new NorthWindContext())
             {
-                //Get all customers
-                var customers = db.Customers.ToList();
-                foreach (var c in customers)
+                var customers = db.Customers.Where(i => i.Id == 3).Select(i => new CustomerDemo
                 {
-                    Console.WriteLine($"Customer: {c.FirstName} {c.LastName}");
-                }
-                //Get all customers select first_name and last_name
-                var customersSelect = db.Customers.Select(c => new
+                    CustomerId = i.Id,
+                    Name = i.FirstName,
+                    OrderCount = i.Orders.Count(),
+                    Orders = i.Orders.Select(a => new OrderDemo
+                    {
+                        OrderId = a.Id,
+                        Total = (decimal)a.OrderDetails.Sum(od => od.Quantity * od.UnitPrice),
+                        Products = a.OrderDetails.Select(p => new ProductDemo
+                        {
+                            ProductId = (int)p.ProductId,
+                            ProductName = p.Product.ProductName,
+                        }).ToList()
+                    }).ToList()
+                }).OrderBy(i => i.OrderCount).ToList();
+                foreach (var customer in customers)
                 {
-                    c.FirstName,
-                    c.LastName
-                });
-                //get customers order by name who lives in new york
-                var customersInNewyork = db.Customers.Where(c => c.City == "New York").Select(c => new { c.FirstName, c.LastName }).OrderBy(c => c.FirstName);
-                foreach (var c in customersInNewyork)
-                {
-                    Console.WriteLine($"Customer: {c.FirstName} {c.LastName}");
-                }
-                //get products name from beverages category
-                var productNamesBeverages = db.Products.Where(c => c.Category == "Beverages").Select(c => c.ProductName).ToList();
-                foreach (var name in productNamesBeverages)
-                {
-                    Console.WriteLine(name);
-                }
-                //get last added 5 products
+                    Console.WriteLine($"Id: {customer.CustomerId} OrderCount: {customer.OrderCount}");
+                    foreach (var order in customer.Orders)
+                    {
+                        Console.WriteLine($"OrderId:{order.OrderId} ,Total: {order.Total}");
+                        foreach (var product in order.Products)
+                        {
+                            Console.WriteLine($"ProductId:{product.ProductId} ,Name: {product.ProductName}");
 
-                var productsLast = db.Products.OrderByDescending(i => i.Id).Select(c => c.ProductName).Take(5);
-                foreach (var name in productsLast)
-                {
-                    Console.WriteLine(name);
+                        }
+                    }
                 }
-                //get product name,price which products price between 10-30
-                var productsNamePriceList = db.Products.Where(p => p.ListPrice < 30 && p.ListPrice > 10).Select(p => new { p.ProductName, p.ListPrice }).OrderByDescending(i => i.ListPrice).ToList();
-                foreach (var product in productsNamePriceList)
-                {
-                    Console.WriteLine($"{product.ProductName}: {product.ListPrice}");
-                }
-
-                //beverages category products average 
-                var avg = db.Products.Where(p => p.Category == "Beverages").Average(i => i.ListPrice);
-                Console.WriteLine("Average: " + avg);
-                //beverages category product count
-                var count = db.Products.Count(p => p.Category == "Beverages");
-                Console.WriteLine("Total Count: " + count);
-                //what are the beverages and condiments products total price
-                var totalPrice = db.Products.Where(i => i.Category == "Beverages" || i.Category == "Condiments").Sum(i => i.ListPrice);
-                Console.WriteLine("Total price :" + totalPrice);
-                //get all products which are include tea
-                var productsTea = db.Products.Where(i => i.ProductName.Contains("Tea") || i.Description.Contains("tea")).Select(i => i.ProductName);
-                foreach (var item in productsTea)
-                {
-                    Console.WriteLine(item);
-                }
-                //most expensive and cheapest price
-                var minPrice = db.Products.Min(i => i.ListPrice);
-                var maxPrice = db.Products.Max(i => i.ListPrice);
-                Console.WriteLine($"Expensive: {maxPrice}, Cheapest: {minPrice}");
-
-                var cheapest = db.Products.Where(i => i.ListPrice == (db.Products.Min(a => a.ListPrice))).FirstOrDefault();
-                Console.WriteLine("Cheapest product name: " + cheapest.ProductName);
 
             }
+
 
         }
 
@@ -381,6 +376,73 @@ namespace EfRelational
                     ProductId = p.Id,
                 }).ToList();
                 db.SaveChanges();
+            }
+        }
+        static void LinqQueriesOneTable()
+        {
+            using (var db = new NorthWindContext())
+            {
+                //Get all customers
+                var customers = db.Customers.ToList();
+                foreach (var c in customers)
+                {
+                    Console.WriteLine($"Customer: {c.FirstName} {c.LastName}");
+                }
+                //Get all customers select first_name and last_name
+                var customersSelect = db.Customers.Select(c => new
+                {
+                    c.FirstName,
+                    c.LastName
+                });
+                //get customers order by name who lives in new york
+                var customersInNewyork = db.Customers.Where(c => c.City == "New York").Select(c => new { c.FirstName, c.LastName }).OrderBy(c => c.FirstName);
+                foreach (var c in customersInNewyork)
+                {
+                    Console.WriteLine($"Customer: {c.FirstName} {c.LastName}");
+                }
+                //get products name from beverages category
+                var productNamesBeverages = db.Products.Where(c => c.Category == "Beverages").Select(c => c.ProductName).ToList();
+                foreach (var name in productNamesBeverages)
+                {
+                    Console.WriteLine(name);
+                }
+                //get last added 5 products
+
+                var productsLast = db.Products.OrderByDescending(i => i.Id).Select(c => c.ProductName).Take(5);
+                foreach (var name in productsLast)
+                {
+                    Console.WriteLine(name);
+                }
+                //get product name,price which products price between 10-30
+                var productsNamePriceList = db.Products.Where(p => p.ListPrice < 30 && p.ListPrice > 10).Select(p => new { p.ProductName, p.ListPrice }).OrderByDescending(i => i.ListPrice).ToList();
+                foreach (var product in productsNamePriceList)
+                {
+                    Console.WriteLine($"{product.ProductName}: {product.ListPrice}");
+                }
+
+                //beverages category products average 
+                var avg = db.Products.Where(p => p.Category == "Beverages").Average(i => i.ListPrice);
+                Console.WriteLine("Average: " + avg);
+                //beverages category product count
+                var count = db.Products.Count(p => p.Category == "Beverages");
+                Console.WriteLine("Total Count: " + count);
+                //what are the beverages and condiments products total price
+                var totalPrice = db.Products.Where(i => i.Category == "Beverages" || i.Category == "Condiments").Sum(i => i.ListPrice);
+                Console.WriteLine("Total price :" + totalPrice);
+                //get all products which are include tea
+                var productsTea = db.Products.Where(i => i.ProductName.Contains("Tea") || i.Description.Contains("tea")).Select(i => i.ProductName);
+                foreach (var item in productsTea)
+                {
+                    Console.WriteLine(item);
+                }
+                //most expensive and cheapest price
+                var minPrice = db.Products.Min(i => i.ListPrice);
+                var maxPrice = db.Products.Max(i => i.ListPrice);
+                Console.WriteLine($"Expensive: {maxPrice}, Cheapest: {minPrice}");
+
+                var cheapest = db.Products.Where(i => i.ListPrice == (db.Products.Min(a => a.ListPrice))).FirstOrDefault();
+                Console.WriteLine("Cheapest product name: " + cheapest.ProductName);
+
             }
         }
     }

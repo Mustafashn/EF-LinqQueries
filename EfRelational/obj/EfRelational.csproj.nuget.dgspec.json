@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\EfRelational.csproj": {}
+    "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\EfRelational.csproj": {}
   },
   "projects": {
-    "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\EfRelational.csproj": {
+    "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\EfRelational.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\EfRelational.csproj",
+        "projectUniqueName": "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\EfRelational.csproj",
         "projectName": "EfRelational",
-        "projectPath": "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\EfRelational.csproj",
+        "projectPath": "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\EfRelational.csproj",
         "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\musta\\Documents\\UdemyWebProgramlama\\.net core- c#\\EfRelational\\obj\\",
+        "outputPath": "C:\\Users\\musta\\Documents\\GitHub\\EF-LinqQueries\\EfRelational\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
