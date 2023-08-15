@@ -190,39 +190,25 @@ namespace EfRelational
         {
             using (var db = new NorthWindContext())
             {
-                var customers = db.Customers.Where(i => i.Id == 3).Select(i => new CustomerDemo
-                {
-                    CustomerId = i.Id,
-                    Name = i.FirstName,
-                    OrderCount = i.Orders.Count(),
-                    Orders = i.Orders.Select(a => new OrderDemo
-                    {
-                        OrderId = a.Id,
-                        Total = (decimal)a.OrderDetails.Sum(od => od.Quantity * od.UnitPrice),
-                        Products = a.OrderDetails.Select(p => new ProductDemo
-                        {
-                            ProductId = (int)p.ProductId,
-                            ProductName = p.Product.ProductName,
-                        }).ToList()
-                    }).ToList()
-                }).OrderBy(i => i.OrderCount).ToList();
+                var city = "New York";
+                var customers = db.Customers.FromSqlRaw("select * from customers where city={0}", city).ToList();
                 foreach (var customer in customers)
                 {
-                    Console.WriteLine($"Id: {customer.CustomerId} OrderCount: {customer.OrderCount}");
-                    foreach (var order in customer.Orders)
-                    {
-                        Console.WriteLine($"OrderId:{order.OrderId} ,Total: {order.Total}");
-                        foreach (var product in order.Products)
-                        {
-                            Console.WriteLine($"ProductId:{product.ProductId} ,Name: {product.ProductName}");
-
-                        }
-                    }
+                    Console.WriteLine(customer.FirstName);
                 }
 
             }
 
+            using (var db = new CustomNorthwindContext())
+            {
+                var customers = db.CustomerOrders
+                .FromSqlRaw("select c.id as CustomerId,c.first_name as FirstName ,count(*) as OrderCount from customers c inner join orders o on c.id=o.customer_id group by c.id").ToList();
 
+                foreach (var customer in customers)
+                {
+                    Console.WriteLine("order id : {0} first name : {1} order count : {2}", customer.CustomerId, customer.FirstName, customer.OrderCount);
+                }
+            }
         }
 
         static void InsertUsers()
@@ -444,6 +430,44 @@ namespace EfRelational
                 Console.WriteLine("Cheapest product name: " + cheapest.ProductName);
 
             }
+        }
+        static void LinqQueriesManyTable()
+        {
+            using (var db = new NorthWindContext())
+            {
+                var customers = db.Customers.Where(i => i.Id == 3).Select(i => new CustomerDemo
+                {
+                    CustomerId = i.Id,
+                    Name = i.FirstName,
+                    OrderCount = i.Orders.Count(),
+                    Orders = i.Orders.Select(a => new OrderDemo
+                    {
+                        OrderId = a.Id,
+                        Total = (decimal)a.OrderDetails.Sum(od => od.Quantity * od.UnitPrice),
+                        Products = a.OrderDetails.Select(p => new ProductDemo
+                        {
+                            ProductId = (int)p.ProductId,
+                            ProductName = p.Product.ProductName,
+                        }).ToList()
+                    }).ToList()
+                }).OrderBy(i => i.OrderCount).ToList();
+                foreach (var customer in customers)
+                {
+                    Console.WriteLine($"Id: {customer.CustomerId} OrderCount: {customer.OrderCount}");
+                    foreach (var order in customer.Orders)
+                    {
+                        Console.WriteLine($"OrderId:{order.OrderId} ,Total: {order.Total}");
+                        foreach (var product in order.Products)
+                        {
+                            Console.WriteLine($"ProductId:{product.ProductId} ,Name: {product.ProductName}");
+
+                        }
+                    }
+                }
+
+            }
+
+
         }
     }
 }
